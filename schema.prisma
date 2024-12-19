@@ -8,8 +8,9 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
+  userId  String @id
   email   String
+  paid    Boolean @default(false)
 }
 
 model Record {

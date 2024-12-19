@@ -32,23 +32,23 @@ export const POST = async (req: NextRequest) => {
     fs.unlinkSync(filePath)
 
     // Create a record with associated user
-    const res = await prisma.record.create({
+    await prisma.record.create({
       data: {
         content: response.text,
         userId,
       },
     })
 
-    console.log('After processing: ', res)
-
     return NextResponse.json({
       transcription: response.text,
       status: 200,
     })
   } catch (err) {
-    return NextResponse.json({
-      error: err,
-      status: 500,
-    })
+    return new Response(
+      JSON.stringify({
+        error: err,
+      }),
+      { status: 500 },
+    )
   }
 }

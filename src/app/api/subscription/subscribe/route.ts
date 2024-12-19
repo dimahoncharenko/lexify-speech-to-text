@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/shared/config/db'
-import { auth } from '@clerk/nextjs/server'
 
 export const POST = async (req: NextRequest) => {
   try {

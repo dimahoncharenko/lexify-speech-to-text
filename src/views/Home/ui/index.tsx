@@ -1,51 +1,54 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
+import {
+  checkIfSubscribed,
+  fetchRecords,
+  transcriptAudio,
+} from '@/shared/lib/requests'
 import { StripeContext } from '@/shared/lib/stripe-context'
 import { TranscribeButton } from '@/shared/ui/transcribe-button'
 import { CustomFileUpload } from '@/widgets/CustomFileUpload'
 import { Header } from '@/widgets/Header'
 import { PaymentWindow } from '@/widgets/PaymentWindow'
+import { useAuth } from '@clerk/nextjs'
 
 import { PaymentWarning } from './PaymentWarning'
 
 export const HomeView = () => {
+  const { userId } = useAuth()
+
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [transcription, setTranscription] = useState('')
   const [records, setRecords] = useState<unknown[]>([])
   const { stripePromise } = useContext(StripeContext)
+  const [isSubscribed, setIsSubscribed] = useState(false)
 
   useEffect(() => {
+    if (!userId) return
     ;(async () => {
-      const res = await fetch('/api/records', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const records = await fetchRecords()
+      setRecords(records)
 
-      const receivedRecords = await res.json()
-
-      setRecords(receivedRecords.records)
+      const payload = new FormData()
+      payload.append('userId', userId)
+      const isSubscribed = await checkIfSubscribed(payload)
+      setIsSubscribed(isSubscribed)
     })()
-  }, [transcription])
+  }, [userId, transcription])
 
   const handleSubmit = async () => {
     if (!file) return
 
     try {
+      setIsLoading(true)
+
       const body = new FormData()
       body.append('files', file)
 
-      const requestOptions = { method: 'POST', body }
-
-      setIsLoading(true)
-
-      const res = await fetch('/api/speech-to-text', requestOptions)
-      const receivedTranscription = await res.json()
-
-      setTranscription(receivedTranscription.transcription)
+      const res = await transcriptAudio(body)
+      setTranscription(res)
 
       setIsLoading(false)
     } catch (err) {
@@ -63,7 +66,7 @@ export const HomeView = () => {
       </form>
 
       <div className='container max-w-[390px] p-2'>
-        {records.length >= 2 ? (
+        {records.length >= 2 && !isSubscribed ? (
           <PaymentWarning>
             <PaymentWindow stripePromise={stripePromise} />
           </PaymentWarning>

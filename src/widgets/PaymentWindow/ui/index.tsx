@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/shared/ui/common/button'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from '@/shared/ui/common/dialog'

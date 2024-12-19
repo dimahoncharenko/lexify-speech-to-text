@@ -19,7 +19,7 @@ export const CustomFileUpload = ({ file, onChangeFile }: Props) => {
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
 
-    const droppedFiles: any[] = Array.from(e.dataTransfer.files)
+    const droppedFiles: File[] = Array.from(e.dataTransfer.files)
     if (droppedFiles.length > 0) {
       const newFiles = Array.from(droppedFiles)
       onChangeFile(newFiles[0])

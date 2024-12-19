@@ -54,7 +54,7 @@ export const CompletionView = () => {
         <Image src='/gifs/succeded.gif' fill unoptimized alt='' />
       </div>
       <h1>Thank you!</h1>
-      <Link href='/'>Let's get back you home!</Link>
+      <Link href='/'>{`Let's get back you home!`}</Link>
       <div
         id='messages'
         role='alert'

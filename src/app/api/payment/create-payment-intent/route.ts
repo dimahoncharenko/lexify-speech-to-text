@@ -3,7 +3,7 @@ import { stripeClient } from '@/shared/config/stripe'
 import Stripe from 'stripe'
 
 export const GET = async () => {
-  let orderAmount = 19900 // In cents (199$);
+  const orderAmount = 19900 // In cents (199$);
   let paymentIntent: Stripe.PaymentIntent
 
   try {

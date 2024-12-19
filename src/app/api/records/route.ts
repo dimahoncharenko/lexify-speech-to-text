@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/shared/config/db'
-import { currentUser } from '@clerk/nextjs/server'
+import { auth } from '@clerk/nextjs/server'
 
 export const GET = async () => {
-  const user = await currentUser()
-
-  console.log(user)
+  const { userId } = await auth()
 
   try {
-    const records = await prisma.record.findMany({})
+    const records = await prisma.record.findMany({
+      where: { userId: `${userId}` },
+      orderBy: { createdAt: 'desc' },
+    })
 
     return NextResponse.json({
       records,

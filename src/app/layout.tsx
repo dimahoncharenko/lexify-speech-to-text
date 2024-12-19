@@ -4,8 +4,11 @@ import { ClerkProvider } from '@clerk/nextjs'
 
 import './globals.css'
 
+import { StripeProvider } from '@/shared/lib/stripe-context'
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
+  weight: ['300', '400', '700'],
   subsets: ['latin'],
 })
 
@@ -30,7 +33,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          {children}
+          <StripeProvider>{children}</StripeProvider>
         </body>
       </html>
     </ClerkProvider>

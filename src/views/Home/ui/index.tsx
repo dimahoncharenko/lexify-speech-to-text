@@ -1,14 +1,20 @@
 'use client'
 
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { Input } from '@/shared/common/input'
+import { useContext, useEffect, useState } from 'react'
+import { StripeContext } from '@/shared/lib/stripe-context'
+import { TranscribeButton } from '@/shared/ui/transcribe-button'
+import { CustomFileUpload } from '@/widgets/CustomFileUpload'
 import { Header } from '@/widgets/Header'
+import { PaymentWindow } from '@/widgets/PaymentWindow'
+
+import { PaymentWarning } from './PaymentWarning'
 
 export const HomeView = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [transcription, setTranscription] = useState('')
   const [records, setRecords] = useState<unknown[]>([])
+  const { stripePromise } = useContext(StripeContext)
 
   useEffect(() => {
     ;(async () => {
@@ -25,11 +31,7 @@ export const HomeView = () => {
     })()
   }, [transcription])
 
-  console.log(records)
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
+  const handleSubmit = async () => {
     if (!file) return
 
     try {
@@ -51,24 +53,26 @@ export const HomeView = () => {
     }
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFile(e.target.files[0])
-    }
-  }
-
   return (
     <>
       <Header />
-      <form onSubmit={handleSubmit} className='container'>
-        <Input type='file' onChange={handleChange} />
-
-        <button type='submit' disabled={isLoading}>
-          Transcribe
-        </button>
+      <form onSubmit={handleSubmit} className='container max-w-[390px] p-2'>
+        <CustomFileUpload file={file} onChangeFile={setFile} />
 
         {transcription && <p>{transcription}</p>}
       </form>
+
+      <div className='container max-w-[390px] p-2'>
+        {records.length >= 2 ? (
+          <PaymentWarning>
+            <PaymentWindow stripePromise={stripePromise} />
+          </PaymentWarning>
+        ) : (
+          <TranscribeButton onClick={() => handleSubmit()} disabled={isLoading}>
+            Transcribe
+          </TranscribeButton>
+        )}
+      </div>
     </>
   )
 }

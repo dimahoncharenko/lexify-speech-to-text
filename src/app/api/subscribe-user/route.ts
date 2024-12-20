@@ -1,27 +1,22 @@
 import { buffer } from 'stream/consumers'
 import { headers } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/shared/config/db'
 import { stripeClient } from '@/shared/config/stripe'
 import { ENV_KEYS } from '@/shared/constants/env'
 import { auth } from '@clerk/nextjs/server'
-import Cors from 'micro-cors'
 import Stripe from 'stripe'
 
-const cors = Cors({
-  allowMethods: ['POST', 'HEAD'],
-})
-
-export const POST = cors(async req => {
+export const POST = async (req: NextRequest) => {
   try {
-    const buf = await buffer(req)
+    const buf = await req.text()
 
     const sig = (await headers()).get('stripe-signature')
     let event: Stripe.Event
 
     try {
       event = stripeClient.webhooks.constructEvent(
-        buf.toString(),
+        buf,
         sig!,
         ENV_KEYS.STRIPE_WEBHOOK_SECRET!,
       )
@@ -53,4 +48,4 @@ export const POST = cors(async req => {
       { status: 500 },
     )
   }
-})
+}

@@ -18,8 +18,6 @@ export const POST = async (req: NextRequest) => {
       },
     })
 
-    console.log(body)
-
     return new Response(JSON.stringify({ received: true }), { status: 200 })
   } catch (err) {
     return new Response(

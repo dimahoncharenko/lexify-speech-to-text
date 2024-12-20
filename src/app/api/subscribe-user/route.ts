@@ -25,6 +25,8 @@ export const POST = cors(async req => {
         sig!,
         ENV_KEYS.STRIPE_WEBHOOK_SECRET!,
       )
+
+      console.log(`Received a ${event.type} event`)
     } catch (err) {
       console.log(`❌ Error message: ${err}`)
       return NextResponse.json({ error: err })

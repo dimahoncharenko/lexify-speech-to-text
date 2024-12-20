@@ -7,15 +7,8 @@ import {
   SetStateAction,
   useEffect,
 } from 'react'
-import Image from 'next/image'
 import { Input } from '@/shared/ui/common/input'
-import {
-  CloudDownload,
-  FileAudio,
-  FolderDown,
-  LucideAudioLines,
-  X,
-} from 'lucide-react'
+import { CloudDownload, FolderDown, LucideAudioLines, X } from 'lucide-react'
 
 type Props = {
   onChangeFile: Dispatch<SetStateAction<File | null>>

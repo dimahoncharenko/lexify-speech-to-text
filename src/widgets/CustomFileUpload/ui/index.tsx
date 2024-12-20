@@ -7,8 +7,15 @@ import {
   SetStateAction,
   useEffect,
 } from 'react'
+import Image from 'next/image'
 import { Input } from '@/shared/ui/common/input'
-import { CloudDownload, FolderDown } from 'lucide-react'
+import {
+  CloudDownload,
+  FileAudio,
+  FolderDown,
+  LucideAudioLines,
+  X,
+} from 'lucide-react'
 
 type Props = {
   onChangeFile: Dispatch<SetStateAction<File | null>>
@@ -48,13 +55,13 @@ export const CustomFileUpload = ({ file, onChangeFile }: Props) => {
       <div className='flex w-full flex-col items-center rounded-lg bg-white p-4 shadow-md'>
         <div className='flex items-center justify-center gap-2'>
           <CloudDownload size={32} />
-          <h3 className='text-2xl'>Upload your audio</h3>
+          <h3 className='mt-2 text-3xl'>Upload your audio</h3>
         </div>
         <p className='text-sm text-gray-300'>File should be wav, mp3, m4a</p>
         <div
           onDrop={handleDrop}
           onDragOver={event => event.preventDefault()}
-          className='my-4 flex h-full w-full flex-col items-center justify-center rounded-xl border-[3px] border-dashed bg-primary-light bg-clip-padding py-2'
+          className='my-4 flex h-full w-full flex-col items-center justify-center rounded-xl border-[3px] border-dashed bg-slate-50 bg-clip-padding py-14'
         >
           <FolderDown size={56} className='text-gray-500' />
           <p className='py-1 text-sm font-light text-gray-400'>
@@ -76,13 +83,15 @@ export const CustomFileUpload = ({ file, onChangeFile }: Props) => {
         />
       </div>
       {file && (
-        <div className='file-item'>
-          <div className='file-info'>
+        <div className='my-2'>
+          <div className='flex gap-2'>
+            <LucideAudioLines className='rounded-full bg-white p-[2px]' />
             <p>{file.name}</p>
-            <p>{file.type}</p>
-          </div>
-          <div className='file-actions'>
-            <span onClick={handleRemoveFile}>-</span>
+
+            <X
+              className='cursor cursor-pointer rounded-full bg-slate-300 text-slate-200'
+              onClick={handleRemoveFile}
+            />
           </div>
         </div>
       )}

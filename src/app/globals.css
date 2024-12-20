@@ -19,6 +19,6 @@ body {
 
 @layer base {
   body {
-    @apply bg-background;
+    @apply h-screen bg-background;
   }
 }

@@ -59,13 +59,16 @@ export const HomeView = () => {
   return (
     <>
       <Header />
-      <form onSubmit={handleSubmit} className='container max-w-[390px] p-2'>
+      <form
+        onSubmit={handleSubmit}
+        className='container mt-12 max-w-[404px] p-2'
+      >
         <CustomFileUpload file={file} onChangeFile={setFile} />
 
         {transcription && <p>{transcription}</p>}
       </form>
 
-      <div className='container max-w-[390px] p-2'>
+      <div className='container max-w-[404px] p-2'>
         {records.length >= 2 && !isSubscribed ? (
           <PaymentWarning>
             <PaymentWindow stripePromise={stripePromise} />

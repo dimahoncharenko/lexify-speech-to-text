@@ -1,8 +1,34 @@
+import { buffer } from 'stream/consumers'
+import { headers } from 'next/headers'
+import { NextResponse } from 'next/server'
 import prisma from '@/shared/config/db'
+import { stripeClient } from '@/shared/config/stripe'
+import { ENV_KEYS } from '@/shared/constants/env'
 import { auth } from '@clerk/nextjs/server'
+import Cors from 'micro-cors'
+import Stripe from 'stripe'
 
-export const POST = async () => {
+const cors = Cors({
+  allowMethods: ['POST', 'HEAD'],
+})
+
+export const POST = cors(async req => {
   try {
+    const buf = await buffer(req)
+
+    const sig = (await headers()).get('stripe-signature')
+    let event: Stripe.Event
+
+    try {
+      event = stripeClient.webhooks.constructEvent(
+        buf.toString(),
+        sig!,
+        ENV_KEYS.STRIPE_WEBHOOK_SECRET!,
+      )
+    } catch (err) {
+      console.log(`❌ Error message: ${err}`)
+      return NextResponse.json({ error: err })
+    }
     const { userId, redirectToSignIn } = await auth()
 
     if (!userId) return redirectToSignIn()
@@ -25,4 +51,4 @@ export const POST = async () => {
       { status: 500 },
     )
   }
-}
+})

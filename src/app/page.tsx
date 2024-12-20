@@ -1,5 +1,10 @@
 import { HomeView } from '@/views/Home'
+import { SignedIn } from '@clerk/nextjs'
 
 export default function Home() {
-  return <HomeView />
+  return (
+    <SignedIn>
+      <HomeView />
+    </SignedIn>
+  )
 }

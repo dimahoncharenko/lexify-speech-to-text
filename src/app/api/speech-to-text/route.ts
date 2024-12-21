@@ -1,12 +1,7 @@
-import fs from 'fs'
-import { pipeline } from 'stream'
-import { promisify } from 'util'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/shared/config/db'
 import { openaiClient } from '@/shared/config/OPENAI'
 import { auth } from '@clerk/nextjs/server'
-
-const pump = promisify(pipeline)
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -17,19 +12,11 @@ export const POST = async (req: NextRequest) => {
     const data = await req.formData()
     const file = data.getAll('files')[0] as File
 
-    // Create a temp file
-    const filePath = `./public/${file.name}`
-    // @ts-expect-error incorrectly typed file object
-    await pump(file.stream(), fs.createWriteStream(filePath))
-
     // Pass it to the API
     const response = await openaiClient.audio.transcriptions.create({
       file,
       model: 'whisper-1',
     })
-
-    // Then remove it
-    fs.unlinkSync(filePath)
 
     // Create a record with associated user
     await prisma.record.create({
@@ -46,7 +33,7 @@ export const POST = async (req: NextRequest) => {
   } catch (err) {
     return new Response(
       JSON.stringify({
-        error: err,
+        error: err instanceof Error ? err.message : 'Something went wrong.',
       }),
       { status: 500 },
     )

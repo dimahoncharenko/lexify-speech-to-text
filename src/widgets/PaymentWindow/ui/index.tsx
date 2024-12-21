@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/ui/common/dialog'
+import { useAuth } from '@clerk/nextjs'
 import { Elements } from '@stripe/react-stripe-js'
 import { Stripe } from '@stripe/stripe-js'
 
@@ -16,15 +17,20 @@ type Props = {
 }
 
 export const PaymentWindow = ({ stripePromise }: Props) => {
+  const { userId } = useAuth()
   const [clientSecret, setClientSecret] = useState('')
   const [isOpened, setIsOpened] = useState(false)
 
   useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    fetch('/api/payment/create-payment-intent')
+    if (!userId) return
+
+    fetch('/api/payment/create-payment-intent', {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    })
       .then(res => res.json())
       .then(({ clientSecret }) => setClientSecret(clientSecret))
-  }, [])
+  }, [userId])
 
   return (
     <>

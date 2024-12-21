@@ -1,37 +1,35 @@
-import { headers } from 'next/headers'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import prisma from '@/shared/config/db'
 import { stripeClient } from '@/shared/config/stripe'
 import { ENV_KEYS } from '@/shared/constants/env'
-import { auth } from '@clerk/nextjs/server'
 import Stripe from 'stripe'
 
 export const POST = async (req: NextRequest) => {
   try {
-    const buf = await req.text()
+    const rawBody = await req.text()
+    const sig = req.headers.get('stripe-signature')
 
-    const sig = (await headers()).get('stripe-signature')
     let event: Stripe.Event
-
     try {
       event = stripeClient.webhooks.constructEvent(
-        buf,
+        rawBody,
         sig!,
         ENV_KEYS.STRIPE_WEBHOOK_SECRET!,
       )
-
-      console.log(`Received a ${event.type} event`)
     } catch (err) {
-      console.log(`❌ Error message: ${err}`)
-      return NextResponse.json({ error: err })
+      console.error('Error verifying webhook signature:', err)
+      return new Response(
+        JSON.stringify({
+          error: err,
+        }),
+        { status: 500 },
+      )
     }
-    const { userId, redirectToSignIn } = await auth()
-
-    if (!userId) return redirectToSignIn()
 
     await prisma.user.update({
       where: {
-        userId: `${userId}`,
+        // @ts-expect-error event.data.object isn't typed fully
+        userId: event.data.object.metadata.userId,
       },
       data: {
         paid: true,

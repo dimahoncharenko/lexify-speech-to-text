@@ -27,7 +27,6 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: `${window.location.origin}/completion`,
       },
     })
@@ -48,16 +47,7 @@ export default function CheckoutForm() {
 
   return (
     <form id='payment-form' onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
-        id='link-authentication-element'
-        // Access the email value like so:
-        // onChange={(event) => {
-        //  setEmail(event.value.email);
-        // }}
-        //
-        // Prefill the email field like so:
-        // options={{defaultValues: {email: 'foo@bar.com'}}}
-      />
+      <LinkAuthenticationElement id='link-authentication-element' />
       <PaymentElement id='payment-element' />
       <Button
         disabled={isLoading || !stripe || !elements}

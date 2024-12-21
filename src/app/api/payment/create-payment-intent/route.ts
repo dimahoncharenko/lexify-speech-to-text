@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { stripeClient } from '@/shared/config/stripe'
 import Stripe from 'stripe'
 
-export const GET = async () => {
+export const POST = async (req: NextRequest) => {
+  const data = await req.json()
+
   const orderAmount = 19900 // In cents (199$);
   let paymentIntent: Stripe.PaymentIntent
 
@@ -11,6 +13,9 @@ export const GET = async () => {
       currency: 'usd',
       amount: orderAmount,
       automatic_payment_methods: { enabled: true },
+      metadata: {
+        userId: data.userId,
+      },
     })
 
     // Send publishable key and PaymentIntent client_secret to client.

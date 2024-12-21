@@ -5,6 +5,9 @@ import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
 import { StripeProvider } from '@/shared/lib/stripe-context'
+import { SidebarProvider, SidebarTrigger } from '@/shared/ui/common/sidebar'
+import { Header } from '@/widgets/Header'
+import { Sidebar } from '@/widgets/Sidebar'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,7 +36,14 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <StripeProvider>{children}</StripeProvider>
+          <StripeProvider>
+            <Header />
+            <SidebarProvider defaultOpen={false}>
+              <Sidebar />
+              <SidebarTrigger className='absolute top-0' size='lg' />
+              {children}
+            </SidebarProvider>
+          </StripeProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
+import { Record } from '@/entities/record/model/types'
 import {
   checkIfSubscribed,
   fetchRecords,
@@ -11,8 +12,10 @@ import { TranscribeButton } from '@/shared/ui/transcribe-button'
 import { CustomFileUpload } from '@/widgets/CustomFileUpload'
 import { Header } from '@/widgets/Header'
 import { PaymentWindow } from '@/widgets/PaymentWindow'
+import { Transcription } from '@/widgets/Transcription'
 import { useAuth } from '@clerk/nextjs'
 
+import { Hero } from './Hero'
 import { PaymentWarning } from './PaymentWarning'
 
 export const HomeView = () => {
@@ -21,7 +24,7 @@ export const HomeView = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [transcription, setTranscription] = useState('')
-  const [records, setRecords] = useState<unknown[]>([])
+  const [records, setRecords] = useState<Record[]>([])
   const { stripePromise } = useContext(StripeContext)
   const [isSubscribed, setIsSubscribed] = useState(false)
 
@@ -57,28 +60,30 @@ export const HomeView = () => {
   }
 
   return (
-    <>
-      <Header />
-      <form
-        onSubmit={handleSubmit}
-        className='container mt-12 max-w-[404px] p-2'
-      >
-        <CustomFileUpload file={file} onChangeFile={setFile} />
+    <div className='container'>
+      <Hero />
+      <div className='mt-12 max-w-[404px] px-2'>
+        <form onSubmit={handleSubmit}>
+          <CustomFileUpload file={file} onChangeFile={setFile} />
+        </form>
 
-        {transcription && <p>{transcription}</p>}
-      </form>
-
-      <div className='container max-w-[404px] p-2'>
-        {records.length >= 2 && !isSubscribed ? (
-          <PaymentWarning>
-            <PaymentWindow stripePromise={stripePromise} />
-          </PaymentWarning>
-        ) : (
-          <TranscribeButton onClick={() => handleSubmit()} disabled={isLoading}>
-            Transcribe
-          </TranscribeButton>
-        )}
+        <div className='pt-10'>
+          {records.length >= 2 && !isSubscribed ? (
+            <PaymentWarning>
+              <PaymentWindow stripePromise={stripePromise} />
+            </PaymentWarning>
+          ) : (
+            <TranscribeButton
+              isLoading={isLoading}
+              onClick={() => handleSubmit()}
+              disabled={isLoading}
+            >
+              Transcribe
+            </TranscribeButton>
+          )}
+        </div>
+        {transcription && <Transcription transcription={transcription} />}
       </div>
-    </>
+    </div>
   )
 }

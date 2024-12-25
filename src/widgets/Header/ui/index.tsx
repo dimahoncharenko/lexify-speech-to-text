@@ -7,8 +7,8 @@ import { UserName } from './user-name'
 export const Header = () => {
   return (
     <header className='bg-primary'>
-      <div className='container flex flex-row justify-between py-2'>
-        <Link href='/' className='ml-8'>
+      <div className='container flex flex-row justify-between px-2 py-2 xl:px-8'>
+        <Link href='/'>
           <Image src='/logo.png' alt='Lexify logo' width={100} height={64} />
         </Link>
 

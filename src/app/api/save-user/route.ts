@@ -4,7 +4,7 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { Webhook } from 'svix'
 
 export async function POST(req: Request) {
-  const SIGNING_SECRET = process.env.SIGNING_SECRET
+  const SIGNING_SECRET = 'whsec_bxnZSpSyTllMmlxnNnS78IJnPp9puIdD'
 
   if (!SIGNING_SECRET) {
     throw new Error(

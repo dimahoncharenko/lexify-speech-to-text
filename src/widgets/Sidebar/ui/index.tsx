@@ -1,8 +1,7 @@
 'use client'
 
 import { Fragment, useContext } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { groupRecordsByDate } from '@/entities/record/lib'
 import { SidebarContext } from '@/shared/lib/trascription-context'
 import { Button } from '@/shared/ui/common/button'
@@ -23,6 +22,9 @@ import { PanelLeft } from 'lucide-react'
 export function Sidebar() {
   const { setOpen } = useSidebar()
   const { setSelected, optimisticRecords } = useContext(SidebarContext)
+  const path = usePathname()
+
+  if (path !== '/') return null
 
   return (
     <CNSidebar>
@@ -35,15 +37,6 @@ export function Sidebar() {
         >
           <PanelLeft className='scale-150' />
         </Button>
-        <Link href='/'>
-          <Image
-            src='/logo.png'
-            className='brightness-0 filter'
-            alt='Lexify logo'
-            width={100}
-            height={64}
-          />
-        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup />
@@ -64,6 +57,7 @@ export function Sidebar() {
                                 variant='ghost'
                                 size='sm'
                                 onClick={() => setSelected(item)}
+                                title={item.file_name}
                               >
                                 {item.file_name}
                               </Button>

@@ -1,10 +1,11 @@
 import { headers } from 'next/headers'
 import prisma from '@/shared/config/db'
+import { ENV_KEYS } from '@/shared/constants/env'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { Webhook } from 'svix'
 
 export async function POST(req: Request) {
-  const SIGNING_SECRET = 'whsec_bxnZSpSyTllMmlxnNnS78IJnPp9puIdD'
+  const SIGNING_SECRET = ENV_KEYS.CLERK_WEBHOOK_SECRET
 
   if (!SIGNING_SECRET) {
     throw new Error(

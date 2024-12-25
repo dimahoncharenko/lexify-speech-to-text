@@ -92,6 +92,8 @@ export const HomeView = () => {
 
       setIsLoading(false)
     } catch (err) {
+      setIsLoading(false)
+
       if (
         err instanceof Error &&
         err.message === 'signal is aborted without reason'

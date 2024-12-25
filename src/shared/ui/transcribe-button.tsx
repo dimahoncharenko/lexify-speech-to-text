@@ -10,7 +10,7 @@ export const TranscribeButton = ({ isLoading, ...props }: Props) => {
     <Button
       {...props}
       className={cn(
-        'inline-flex w-full items-center rounded-lg bg-secondary text-white',
+        'inline-flex w-full items-center rounded-lg bg-secondary py-6 text-xl text-white hover:bg-yellow-700',
         props.className,
       )}
     >

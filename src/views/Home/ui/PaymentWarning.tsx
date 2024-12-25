@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { Button } from '@/shared/ui/common/button'
 import {
   Dialog,
   DialogContent,
@@ -8,18 +9,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/ui/common/dialog'
-import { TranscribeButton } from '@/shared/ui/transcribe-button'
 import { DialogClose } from '@radix-ui/react-dialog'
+import { Check } from 'lucide-react'
 
 type Props = {
   children: React.ReactNode
+  disabled?: boolean
 }
 
-export const PaymentWarning = ({ children }: Props) => {
+export const PaymentWarning = ({ children, disabled }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <TranscribeButton>Transcribe</TranscribeButton>
+        <Button
+          variant='ghost'
+          size='none'
+          title='Transcript file'
+          disabled={disabled}
+        >
+          <Check className='cursor bg-accent cursor-pointer rounded-full text-white transition-colors hover:text-white' />
+        </Button>
       </DialogTrigger>
       <DialogContent className='container'>
         <DialogHeader>

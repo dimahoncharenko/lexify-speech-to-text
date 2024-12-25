@@ -6,8 +6,12 @@ import Stripe from 'stripe'
 
 export const POST = async (req: NextRequest) => {
   try {
+    console.log('Starting the process...')
+
     const rawBody = await req.text()
     const sig = req.headers.get('stripe-signature')
+
+    console.log('Before constructing event')
 
     let event: Stripe.Event
     try {
@@ -26,6 +30,10 @@ export const POST = async (req: NextRequest) => {
       )
     }
 
+    console.log('After constructing event', event)
+
+    console.log('Starts updating User object')
+
     await prisma.user.update({
       where: {
         // @ts-expect-error event.data.object isn't typed fully
@@ -35,6 +43,8 @@ export const POST = async (req: NextRequest) => {
         paid: true,
       },
     })
+
+    console.log('User updated successfully!')
 
     return new Response(JSON.stringify({ received: true }), { status: 200 })
   } catch (err) {

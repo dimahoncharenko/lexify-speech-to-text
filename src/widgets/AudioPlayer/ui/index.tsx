@@ -112,10 +112,38 @@ export const AudioPlayer = ({ source, classNames }: Props) => {
   }
 
   return (
-    <div className={cn('flex flex-col', classNames?.wrapper)}>
+    <div className={cn('flex items-center gap-4', classNames?.wrapper)}>
       <audio ref={audioPlayer} className='hidden' preload='metadata'>
         <source src={source} />
       </audio>
+
+      {/* Controls */}
+      <div className='flex gap-1'>
+        <Button
+          variant='ghost'
+          className={cn(classNames?.rewind)}
+          onClick={() => handleRewind(15)}
+        >
+          <Rewind />
+        </Button>
+        <Button
+          size='icon'
+          className={cn(
+            'rounded-full bg-accent text-white hover:bg-slate-200',
+            classNames?.playpause,
+          )}
+          onClick={togglePlayer}
+        >
+          {isPaused ? <Play /> : <Pause />}
+        </Button>
+        <Button
+          variant='ghost'
+          className={cn(classNames?.forward)}
+          onClick={() => handleForward(15)}
+        >
+          <FastForward />
+        </Button>
+      </div>
 
       {/* Player itself */}
       <div className={cn('flex', classNames?.audio)}>
@@ -144,25 +172,6 @@ export const AudioPlayer = ({ source, classNames }: Props) => {
         <span className={cn(classNames?.durationTime)}>
           {!isNaN(metadata.duration) && formatDuration(metadata.duration)}
         </span>
-      </div>
-
-      {/* Controls */}
-      <div className='flex gap-1'>
-        <Button
-          className={cn(classNames?.rewind)}
-          onClick={() => handleRewind(15)}
-        >
-          <Rewind />
-        </Button>
-        <Button className={cn(classNames?.playpause)} onClick={togglePlayer}>
-          {isPaused ? <Play /> : <Pause />}
-        </Button>
-        <Button
-          className={cn(classNames?.forward)}
-          onClick={() => handleForward(15)}
-        >
-          <FastForward />
-        </Button>
       </div>
     </div>
   )

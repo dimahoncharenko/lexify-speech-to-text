@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useEffect, useOptimistic, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Record } from '@/entities/record/model/types'
 
 import { fetchRecords } from './requests'
@@ -23,6 +24,8 @@ type SidebarProviderProps = {
 }
 
 export const SelectedProvider = ({ children }: SidebarProviderProps) => {
+  const path = usePathname()
+
   const [currentTranscription, setCurrentTranscription] = useState<
     null | string
   >(null)
@@ -38,6 +41,8 @@ export const SelectedProvider = ({ children }: SidebarProviderProps) => {
   }
 
   useEffect(() => {
+    if (path !== '/') return
+
     ;(async () => {
       try {
         const records = await fetchRecords()

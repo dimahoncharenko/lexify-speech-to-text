@@ -1,6 +1,7 @@
 'use client'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useTransition } from 'react'
+import { useCheckUnsavedChanges } from '@/shared/hooks/use-check-unsaved-changes'
 import { checkIfSubscribed, transcriptAudio } from '@/shared/lib/requests'
 import { StripeContext } from '@/shared/lib/stripe-context'
 import { SidebarContext } from '@/shared/lib/trascription-context'
@@ -13,13 +14,15 @@ import { Transcription } from '@/widgets/Transcription'
 import { useAuth } from '@clerk/nextjs'
 import { Check, FileMusic, Loader2, LucideAudioLines, X } from 'lucide-react'
 
+import { DeleteWarning } from './DeleteWarning'
 import { Hero } from './Hero'
 import { PaymentWarning } from './PaymentWarning'
 import classes from './player.module.css'
 
 export const HomeView = () => {
   const { userId } = useAuth()
-
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const { stripePromise } = useContext(StripeContext)
@@ -32,7 +35,25 @@ export const HomeView = () => {
     currentTranscription,
     setCurrentTranscription,
   } = useContext(SidebarContext)
+  const [, changeOptimistically] = useTransition()
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const [, setUnsavedChanges] = useCheckUnsavedChanges()
+
+  useEffect(() => {
+    // When component is unmount and the client still waiting for server response, then abort the operation
+
+    return () => {
+      abortController?.abort('Interrupted by user.')
+    }
+  }, [abortController])
+
+  useEffect(() => {
+    if (files.length) {
+      setUnsavedChanges(true)
+    } else {
+      setUnsavedChanges(false)
+    }
+  }, [files.length])
 
   useEffect(() => {
     if (!userId) return
@@ -46,28 +67,44 @@ export const HomeView = () => {
 
   const handleSubmit = async (file: File) => {
     try {
-      setOptimisticRecord({
-        content: 'Processing...',
-        createdAt: new Date().toLocaleDateString(),
-        updatedAt: new Date().toLocaleDateString(),
-        userId: `${userId}`,
-        id: 0x999,
-        file_name: `${file.name}`,
+      const abort = new AbortController()
+      setAbortController(abort)
+
+      changeOptimistically(() => {
+        setOptimisticRecord({
+          content: 'Processing...',
+          createdAt: new Date().toLocaleDateString(),
+          updatedAt: new Date().toLocaleDateString(),
+          userId: `${userId}`,
+          id: 0x999,
+          file_name: `${file.name}`,
+        })
       })
       setIsLoading(true)
 
       const body = new FormData()
       body.append('files', files[0])
 
-      const res = await transcriptAudio(body)
+      const res = await transcriptAudio(body, abort.signal)
       addRecord(res)
       setCurrentTranscription(res.content)
       setSelected(null)
 
       setIsLoading(false)
     } catch (err) {
-      console.error('Error:', err)
+      if (
+        err instanceof Error &&
+        err.message === 'signal is aborted without reason'
+      ) {
+        console.error('Aborted')
+      }
     }
+  }
+
+  const abortTranscribing = (index: number) => {
+    abortController?.abort()
+    handleRemoveFile(index)
+    setIsLoading(false)
   }
 
   const handleRemoveFile = (index: number) => {
@@ -75,7 +112,7 @@ export const HomeView = () => {
   }
 
   return (
-    <div className='container'>
+    <div className='container px-4'>
       <Hero />
       <div className='mt-12'>
         <div className='flex flex-col gap-8 md:flex-row'>
@@ -91,7 +128,7 @@ export const HomeView = () => {
                       key={index}
                       className='max-w-[380px] border-b border-b-primary-light px-2 py-4 xl:max-w-[650px]'
                     >
-                      <div className='mb-3 grid grid-cols-[32px_auto_auto_auto] items-center gap-3'>
+                      <div className='mb-3 grid grid-cols-[32px_auto_min-content_min-content] items-center gap-3'>
                         <LucideAudioLines className='size-8 rounded-full bg-white p-[2px]' />
                         <p
                           className='overflow-hidden text-ellipsis whitespace-pre'
@@ -99,15 +136,21 @@ export const HomeView = () => {
                         >
                           {file.name}
                         </p>
-                        <Button
-                          variant='ghost'
-                          size='none'
-                          title='Remove file'
-                          className='ml-auto'
-                          onClick={() => handleRemoveFile(index)}
-                        >
-                          <X className='cursor cursor-pointer rounded-full bg-red-600 text-white transition-colors' />
-                        </Button>
+                        {isLoading ? (
+                          <DeleteWarning
+                            handleDelete={() => abortTranscribing(index)}
+                          />
+                        ) : (
+                          <Button
+                            variant='ghost'
+                            size='none'
+                            title='Remove file'
+                            className='ml-auto'
+                            onClick={() => handleRemoveFile(index)}
+                          >
+                            <X className='cursor cursor-pointer rounded-full bg-red-600 text-white transition-colors' />
+                          </Button>
+                        )}
                         {records && records.length >= 2 && !isSubscribed ? (
                           <PaymentWarning disabled={isLoading || !files.length}>
                             <PaymentWindow stripePromise={stripePromise} />

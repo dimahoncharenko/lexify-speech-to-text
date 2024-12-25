@@ -13,7 +13,6 @@ export const GET = async () => {
 
     return NextResponse.json({
       records,
-      status: 200,
     })
   } catch (err) {
     return new Response(

@@ -7,8 +7,7 @@ import './globals.css'
 import { StripeProvider } from '@/shared/lib/stripe-context'
 import { SelectedProvider } from '@/shared/lib/trascription-context'
 import { UnsavedChangesProvider } from '@/shared/lib/unsaved-changes-context'
-import { SidebarProvider, SidebarTrigger } from '@/shared/ui/common/sidebar'
-import { Sidebar } from '@/widgets/Sidebar'
+import { SidebarProvider } from '@/shared/ui/common/sidebar'
 
 const poppins = Poppins({
   variable: '--font-poppins',
@@ -33,7 +32,6 @@ export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
-  params: Promise<any>
 }>) {
   return (
     <ClerkProvider>

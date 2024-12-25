@@ -35,9 +35,9 @@ export const HomeView = () => {
     currentTranscription,
     setCurrentTranscription,
   } = useContext(SidebarContext)
-  const [_, changeOptimistically] = useTransition()
+  const [, changeOptimistically] = useTransition()
   const [isSubscribed, setIsSubscribed] = useState(false)
-  const [__, setUnsavedChanges] = useCheckUnsavedChanges()
+  const [, setUnsavedChanges] = useCheckUnsavedChanges()
 
   useEffect(() => {
     // When component is unmount and the client still waiting for server response, then abort the operation

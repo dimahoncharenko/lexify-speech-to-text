@@ -1,10 +1,8 @@
-import Image from 'next/image'
 import { Button } from '@/shared/ui/common/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,

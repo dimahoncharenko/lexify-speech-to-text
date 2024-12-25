@@ -16,6 +16,7 @@ export default {
       colors: {
         background: 'hsl(var(--background))',
         primary: {
+          DEFAULT: 'hsl(var(--primary))',
           light: 'hsl(var(--primary-light))',
         },
         accent: 'hsl(var(--accent))',
@@ -34,6 +35,16 @@ export default {
       fontFamily: {
         poppins: ['var(--font-poppins)', 'sans-serif'],
         julius: ['var(--font-julius)', 'sans-serif'],
+      },
+      keyframes: {
+        spin: {
+          from: {
+            transform: 'rotate(0deg)',
+          },
+          to: {
+            transform: 'rotate(360deg)',
+          },
+        },
       },
     },
   },

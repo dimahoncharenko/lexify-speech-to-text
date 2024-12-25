@@ -42,10 +42,12 @@ export default function RootLayout({
         >
           <StripeProvider>
             <SelectedProvider>
-              <Header />
               <SidebarProvider defaultOpen={false}>
                 <Sidebar />
-                <SidebarTrigger className='absolute top-0' size='lg' />
+                <SidebarTrigger
+                  className='absolute top-0 text-white'
+                  size='lg'
+                />
                 {children}
               </SidebarProvider>
             </SelectedProvider>

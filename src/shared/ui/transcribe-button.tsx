@@ -1,15 +1,28 @@
+import Image from 'next/image'
+
 import { cn } from '../lib/utils'
 import { Button, ButtonProps } from './common/button'
 
-export const TranscribeButton = (props: ButtonProps) => {
+type Props = ButtonProps & { isLoading?: boolean }
+
+export const TranscribeButton = ({ isLoading, ...props }: Props) => {
   return (
     <Button
       {...props}
       className={cn(
-        'mt-5 w-full rounded-lg bg-secondary text-white',
+        'inline-flex w-full items-center rounded-lg bg-secondary py-6 text-xl text-white hover:bg-yellow-700',
         props.className,
       )}
     >
+      {isLoading && (
+        <Image
+          src='/gifs/audio-editing.gif'
+          alt=''
+          width={34}
+          height={34}
+          unoptimized
+        />
+      )}
       Transcribe
     </Button>
   )

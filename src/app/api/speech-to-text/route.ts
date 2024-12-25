@@ -19,15 +19,16 @@ export const POST = async (req: NextRequest) => {
     })
 
     // Create a record with associated user
-    await prisma.record.create({
+    const record = await prisma.record.create({
       data: {
         content: response.text,
         userId,
+        file_name: file.name,
       },
     })
 
     return NextResponse.json({
-      transcription: response.text,
+      transcription: record,
       status: 200,
     })
   } catch (err) {

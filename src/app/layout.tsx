@@ -7,7 +7,6 @@ import './globals.css'
 import { StripeProvider } from '@/shared/lib/stripe-context'
 import { SelectedProvider } from '@/shared/lib/trascription-context'
 import { SidebarProvider, SidebarTrigger } from '@/shared/ui/common/sidebar'
-import { Header } from '@/widgets/Header'
 import { Sidebar } from '@/widgets/Sidebar'
 
 const poppins = Poppins({

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { UserButton, useUser } from '@clerk/nextjs'
+import { UserButton } from '@clerk/nextjs'
 
 import { UserName } from './user-name'
 

@@ -1,23 +1,27 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Julius_Sans_One, Poppins } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 
 import './globals.css'
 
 import { StripeProvider } from '@/shared/lib/stripe-context'
+import { SelectedProvider } from '@/shared/lib/trascription-context'
 import { SidebarProvider, SidebarTrigger } from '@/shared/ui/common/sidebar'
 import { Header } from '@/widgets/Header'
 import { Sidebar } from '@/widgets/Sidebar'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  weight: ['300', '400', '700'],
+const poppins = Poppins({
+  variable: '--font-poppins',
+  weight: ['300', '400'],
   subsets: ['latin'],
+  display: 'swap',
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const juliusSans = Julius_Sans_One({
+  variable: '--font-julius',
+  weight: ['400'],
   subsets: ['latin'],
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -34,15 +38,17 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang='en'>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${poppins.className} ${juliusSans.variable} antialiased`}
         >
           <StripeProvider>
-            <Header />
-            <SidebarProvider defaultOpen={false}>
-              <Sidebar />
-              <SidebarTrigger className='absolute top-0' size='lg' />
-              {children}
-            </SidebarProvider>
+            <SelectedProvider>
+              <Header />
+              <SidebarProvider defaultOpen={false}>
+                <Sidebar />
+                <SidebarTrigger className='absolute top-0' size='lg' />
+                {children}
+              </SidebarProvider>
+            </SelectedProvider>
           </StripeProvider>
         </body>
       </html>

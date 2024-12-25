@@ -1,11 +1,10 @@
 'use client'
 
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { groupRecordsByDate } from '@/entities/record/lib'
-import { Record } from '@/entities/record/model/types'
-import { fetchRecords } from '@/shared/lib/requests'
+import { SidebarContext } from '@/shared/lib/trascription-context'
 import { Button } from '@/shared/ui/common/button'
 import {
   Sidebar as CNSidebar,
@@ -22,19 +21,8 @@ import {
 import { PanelLeft } from 'lucide-react'
 
 export function Sidebar() {
-  const [records, setRecords] = useState<Record[]>([])
   const { setOpen } = useSidebar()
-
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const records = await fetchRecords()
-        setRecords(records)
-      } catch (err) {
-        console.error(err)
-      }
-    })()
-  }, [])
+  const { setSelected, optimisticRecords } = useContext(SidebarContext)
 
   return (
     <CNSidebar>
@@ -59,20 +47,25 @@ export function Sidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup />
-        {records.length && (
+        {optimisticRecords && optimisticRecords.length > 0 && (
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {groupRecordsByDate(records).map(
+                {groupRecordsByDate(optimisticRecords).map(
                   (group, index) =>
+                    group.items &&
                     group.items.length > 0 && (
                       <div key={index}>
                         <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
                         {group.items.map(item => (
                           <Fragment key={item.id}>
                             <SidebarMenuItem className='max-w-full overflow-hidden text-ellipsis whitespace-pre'>
-                              <Button variant='ghost' size='sm'>
-                                {item.content}
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                onClick={() => setSelected(item)}
+                              >
+                                {item.file_name}
                               </Button>
                             </SidebarMenuItem>
                           </Fragment>

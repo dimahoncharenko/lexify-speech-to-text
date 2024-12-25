@@ -9,6 +9,7 @@ body {
 @layer base {
   :root {
     --background: 0 0% 98%;
+    --primary: 180 30% 70%;
     --primary-light: 213 60% 97%;
     --accent: 24.89 76.27% 65.29%;
     --secondary: 33 42% 58%;

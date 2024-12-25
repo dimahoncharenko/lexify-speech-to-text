@@ -18,6 +18,8 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva, VariantProps } from 'class-variance-authority'
 import { PanelLeft } from 'lucide-react'
 
+import { DialogTitle } from './dialog'
+
 const SIDEBAR_COOKIE_NAME = 'sidebar:state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = '16rem'
@@ -211,6 +213,7 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
+            <DialogTitle hidden>Sidebar</DialogTitle>
             <div className='flex h-full w-full flex-col'>{children}</div>
           </SheetContent>
         </Sheet>

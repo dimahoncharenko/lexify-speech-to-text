@@ -11,7 +11,7 @@ import { CustomFileUpload } from '@/widgets/CustomFileUpload'
 import { PaymentWindow } from '@/widgets/PaymentWindow'
 import { Transcription } from '@/widgets/Transcription'
 import { useAuth } from '@clerk/nextjs'
-import { Check, FileMusic, LucideAudioLines, X } from 'lucide-react'
+import { Check, FileMusic, Loader2, LucideAudioLines, X } from 'lucide-react'
 
 import { Hero } from './Hero'
 import { PaymentWarning } from './PaymentWarning'
@@ -77,22 +77,22 @@ export const HomeView = () => {
   return (
     <div className='container'>
       <Hero />
-      <div className='mt-12 px-2'>
+      <div className='mt-12'>
         <div className='flex flex-col gap-8 md:flex-row'>
           <div className='flex-1'>
             <CustomFileUpload files={files} onChangeFiles={setFiles} />
           </div>
-          <div className='max-h-[50vh] flex-1 overflow-y-scroll rounded-lg bg-white p-4 shadow-md'>
+          <div className='max-h-[50vh] flex-1 overflow-y-auto rounded-lg border-t border-t-primary-light bg-white py-4 shadow-md'>
             {files.length > 0 ? (
               <>
                 {files.map((file, index) => {
                   return (
                     <div
                       key={index}
-                      className='my-2 max-w-[380px] xl:max-w-[650px]'
+                      className='max-w-[380px] border-b border-b-primary-light px-2 py-4 xl:max-w-[650px]'
                     >
-                      <div className='flex gap-2'>
-                        <LucideAudioLines className='rounded-full bg-white p-[2px] text-xl' />
+                      <div className='mb-3 grid grid-cols-[32px_auto_auto_auto] items-center gap-3'>
+                        <LucideAudioLines className='size-8 rounded-full bg-white p-[2px]' />
                         <p
                           className='overflow-hidden text-ellipsis whitespace-pre'
                           title={file.name}
@@ -118,8 +118,13 @@ export const HomeView = () => {
                             size='none'
                             title='Transcript file'
                             onClick={() => handleSubmit(file)}
+                            disabled={isLoading}
                           >
-                            <Check className='cursor cursor-pointer rounded-full bg-accent text-white transition-colors' />
+                            {isLoading ? (
+                              <Loader2 className='animate-spin rounded-full bg-accent text-white' />
+                            ) : (
+                              <Check className='cursor cursor-pointer rounded-full bg-accent text-white transition-colors' />
+                            )}
                           </Button>
                         )}
                       </div>
@@ -127,7 +132,7 @@ export const HomeView = () => {
                       <AudioPlayer
                         source={URL.createObjectURL(file)}
                         classNames={{
-                          wrapper: 'flex w-full items-center',
+                          wrapper: 'flex w-full',
                           audio: 'w-full gap-2 py-2',
                           durationTime: 'font-mono',
                           currentTime: 'font-mono',

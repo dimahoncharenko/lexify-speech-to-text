@@ -7,7 +7,6 @@ import './globals.css'
 import { StripeProvider } from '@/shared/lib/stripe-context'
 import { SelectedProvider } from '@/shared/lib/trascription-context'
 import { SidebarProvider, SidebarTrigger } from '@/shared/ui/common/sidebar'
-import { Header } from '@/widgets/Header'
 import { Sidebar } from '@/widgets/Sidebar'
 
 const poppins = Poppins({
@@ -42,10 +41,12 @@ export default function RootLayout({
         >
           <StripeProvider>
             <SelectedProvider>
-              <Header />
               <SidebarProvider defaultOpen={false}>
                 <Sidebar />
-                <SidebarTrigger className='absolute top-0' size='lg' />
+                <SidebarTrigger
+                  className='absolute top-0 text-white'
+                  size='lg'
+                />
                 {children}
               </SidebarProvider>
             </SelectedProvider>

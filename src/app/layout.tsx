@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 
 import './globals.css'
 
+import { ErrorBoundaryProvider } from '@/shared/lib/error-boundary-context'
 import { StripeProvider } from '@/shared/lib/stripe-context'
 import { SelectedProvider } from '@/shared/lib/trascription-context'
 import { UnsavedChangesProvider } from '@/shared/lib/unsaved-changes-context'
@@ -39,15 +40,17 @@ export default async function RootLayout({
         <body
           className={`${poppins.className} ${juliusSans.variable} antialiased`}
         >
-          <StripeProvider>
-            <UnsavedChangesProvider>
-              <SelectedProvider>
-                <SidebarProvider defaultOpen={false}>
-                  {children}
-                </SidebarProvider>
-              </SelectedProvider>
-            </UnsavedChangesProvider>
-          </StripeProvider>
+          <ErrorBoundaryProvider>
+            <StripeProvider>
+              <UnsavedChangesProvider>
+                <SelectedProvider>
+                  <SidebarProvider defaultOpen={false}>
+                    {children}
+                  </SidebarProvider>
+                </SelectedProvider>
+              </UnsavedChangesProvider>
+            </StripeProvider>
+          </ErrorBoundaryProvider>
         </body>
       </html>
     </ClerkProvider>

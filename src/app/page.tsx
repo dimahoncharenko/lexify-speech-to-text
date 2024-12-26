@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { SidebarTrigger } from '@/shared/ui/common/sidebar'
-import { HomeView } from '@/views/Home'
+import { HomeWrapper } from '@/views/Home/ui/HomeWrapper'
 import { Header } from '@/widgets/Header'
 import { Sidebar } from '@/widgets/Sidebar'
 import { SignedIn } from '@clerk/nextjs'
@@ -17,7 +17,7 @@ export default function Home() {
       <SidebarTrigger className='absolute top-0 text-white' size='lg' />
       <div className='flex w-full flex-col'>
         <Header />
-        <HomeView />
+        <HomeWrapper />
       </div>
     </SignedIn>
   )

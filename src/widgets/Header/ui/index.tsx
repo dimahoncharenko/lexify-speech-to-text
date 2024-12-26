@@ -7,7 +7,7 @@ import { UserName } from './user-name'
 
 export const Header = () => {
   return (
-    <header className='fixed w-full bg-primary'>
+    <header className='fixed z-50 w-full bg-primary'>
       <div className='container flex flex-row justify-between px-2 py-2 xl:px-8'>
         <Link href='/'>
           <Image src='/logo.png' alt='Lexify logo' width={100} height={64} />
@@ -25,7 +25,7 @@ export const Header = () => {
         </div>
       </div>
 
-      <div className='absolute left-20 hidden h-[318px] w-[181px] xl:block'>
+      <div className='pointer-events-none absolute left-20 hidden h-[318px] w-[181px] select-none xl:block'>
         <Image src='/images/bigger-toys.png' alt='Left toy' fill />
         {[
           { id: 1, size: 50, className: 'top-10' },
@@ -37,7 +37,7 @@ export const Header = () => {
         ))}
       </div>
 
-      <div className='absolute right-20 hidden h-[262px] w-[120px] xl:block'>
+      <div className='pointer-events-none absolute right-20 hidden h-[262px] w-[120px] select-none xl:block'>
         <Image
           style={{
             transform: 'rotateY(180deg)',

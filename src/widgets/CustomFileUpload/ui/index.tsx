@@ -28,31 +28,38 @@ export const CustomFileUpload = ({ files, onChangeFiles }: Props) => {
     const droppedFiles: File[] = Array.from(e.dataTransfer.files)
     if (droppedFiles.length > 0) {
       const newFiles = Array.from(droppedFiles)
-      if (newFiles[0] && isSupportedFile(newFiles[0])) {
-        setError(null)
-        onChangeFiles(prev => [...prev, ...newFiles])
-      } else {
-        setError(new Error('Unsupported file type.'))
+
+      for (const file of newFiles) {
+        if (isSupportedFile(file)) {
+          setError(null)
+          onChangeFiles(prev => [...prev, file])
+        } else {
+          setError(new Error('Unsupported file type.'))
+        }
       }
     }
   }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files
+
     if (selectedFiles && selectedFiles.length > 0) {
       const newFiles = Array.from(selectedFiles)
-      if (newFiles[0] && isSupportedFile(newFiles[0])) {
-        setError(null)
-        onChangeFiles(prev => [...prev, ...newFiles])
-      } else {
-        setError(new Error('Unsupported file type.'))
+
+      for (const file of newFiles) {
+        if (isSupportedFile(file)) {
+          setError(null)
+          onChangeFiles(prev => [...prev, file])
+        } else {
+          setError(new Error('Unsupported file type.'))
+        }
       }
     }
   }
 
   useEffect(() => {
     onChangeFiles(files)
-  }, [files.length])
+  }, [files])
 
   return (
     <div className='flex h-full w-full flex-col items-center rounded-lg bg-white p-4 shadow-md'>

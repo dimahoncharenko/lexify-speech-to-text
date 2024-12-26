@@ -19,11 +19,13 @@ import { Hero } from './Hero'
 import { PaymentWarning } from './PaymentWarning'
 import classes from './player.module.css'
 
+type Index = number
+
 export const HomeView = () => {
   const { userId } = useAuth()
   const [abortController, setAbortController] =
     useState<AbortController | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState<Index | null>(null)
   const [files, setFiles] = useState<File[]>([])
   const { stripePromise } = useContext(StripeContext)
   const {
@@ -65,22 +67,12 @@ export const HomeView = () => {
     })()
   }, [userId, records.length])
 
-  const handleSubmit = async (file: File) => {
+  const handleSubmit = async (file: File, fileIndex: Index) => {
     try {
       const abort = new AbortController()
       setAbortController(abort)
 
-      changeOptimistically(() => {
-        setOptimisticRecord({
-          content: 'Processing...',
-          createdAt: new Date().toLocaleDateString(),
-          updatedAt: new Date().toLocaleDateString(),
-          userId: `${userId}`,
-          id: 0x999,
-          file_name: `${file.name}`,
-        })
-      })
-      setIsLoading(true)
+      setIsLoading(fileIndex)
 
       const body = new FormData()
       body.append('files', files[0])
@@ -90,23 +82,24 @@ export const HomeView = () => {
       setCurrentTranscription(res.content)
       setSelected(null)
 
-      setIsLoading(false)
+      setIsLoading(null)
     } catch (err) {
-      setIsLoading(false)
+      setIsLoading(null)
 
-      if (
-        err instanceof Error &&
-        err.message === 'signal is aborted without reason'
-      ) {
+      if (err instanceof Error && err.message === 'Interrupted by user.') {
         console.error('Aborted')
       }
     }
   }
 
   const abortTranscribing = (index: number) => {
-    abortController?.abort()
-    handleRemoveFile(index)
-    setIsLoading(false)
+    try {
+      abortController?.abort('Interrupted by user.')
+      handleRemoveFile(index)
+      setIsLoading(index)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const handleRemoveFile = (index: number) => {
@@ -138,7 +131,7 @@ export const HomeView = () => {
                         >
                           {file.name}
                         </p>
-                        {isLoading ? (
+                        {isLoading === index ? (
                           <DeleteWarning
                             handleDelete={() => abortTranscribing(index)}
                           />
@@ -154,7 +147,9 @@ export const HomeView = () => {
                           </Button>
                         )}
                         {records && records.length >= 2 && !isSubscribed ? (
-                          <PaymentWarning disabled={isLoading || !files.length}>
+                          <PaymentWarning
+                            disabled={isLoading === index || !files.length}
+                          >
                             <PaymentWindow stripePromise={stripePromise} />
                           </PaymentWarning>
                         ) : (
@@ -162,10 +157,10 @@ export const HomeView = () => {
                             variant='ghost'
                             size='none'
                             title='Transcript file'
-                            onClick={() => handleSubmit(file)}
-                            disabled={isLoading}
+                            onClick={() => handleSubmit(file, index)}
+                            disabled={isLoading === index}
                           >
-                            {isLoading ? (
+                            {isLoading === index ? (
                               <Loader2 className='animate-spin rounded-full bg-accent text-white' />
                             ) : (
                               <Check className='cursor cursor-pointer rounded-full bg-accent text-white transition-colors' />

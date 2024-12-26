@@ -114,7 +114,7 @@ export const HomeView = () => {
   }
 
   return (
-    <div className='container px-4'>
+    <div className='container mt-12 px-4'>
       <Hero />
       <div className='mt-12'>
         <div className='flex flex-col gap-8 md:flex-row'>

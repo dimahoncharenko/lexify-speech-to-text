@@ -36,6 +36,11 @@ export default {
         poppins: ['var(--font-poppins)', 'sans-serif'],
         julius: ['var(--font-julius)', 'sans-serif'],
       },
+      animation: {
+        large: 'large 2.5s infinite',
+        'large-2': 'large-2 2.5s infinite',
+        small: 'small 2.5s infinite',
+      },
       keyframes: {
         spin: {
           from: {
@@ -43,6 +48,45 @@ export default {
           },
           to: {
             transform: 'rotate(360deg)',
+          },
+        },
+        large: {
+          '0%': {
+            opacity: '0',
+            transform: 'rotate(0deg) scale(0)',
+          },
+          '50%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'rotate(360deg) scale(1.5)',
+          },
+        },
+        'large-2': {
+          '0%': {
+            opacity: '0',
+            transform: 'rotate(45deg) scale(0)',
+          },
+          '50%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'rotate(405deg) scale(1.1)',
+          },
+        },
+        small: {
+          '0%': {
+            opacity: '0',
+            transform: 'rotate(0deg) scale(0)',
+          },
+          '50%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'rotate(-360deg) scale(1.5)',
           },
         },
       },

@@ -72,6 +72,17 @@ export const HomeView = () => {
       const abort = new AbortController()
       setAbortController(abort)
 
+      changeOptimistically(() => {
+        setOptimisticRecord({
+          content: 'Processing...',
+          createdAt: new Date().toLocaleDateString(),
+          updatedAt: new Date().toLocaleDateString(),
+          file_name: file.name,
+          id: 0x999,
+          userId: `${userId}`,
+        })
+      })
+
       setIsLoading(fileIndex)
 
       const body = new FormData()
